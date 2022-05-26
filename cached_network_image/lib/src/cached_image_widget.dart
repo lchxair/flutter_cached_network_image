@@ -201,6 +201,18 @@ class CachedNetworkImage extends StatelessWidget {
   /// Will resize the image and store the resized image in the disk cache.
   final int? maxHeightDiskCache;
 
+  /// loadedCallback
+  final Function(dynamic)? loadedCallback;
+
+  /// failedCallback
+  final VoidCallback? failedCallback;
+
+  /// startCallback
+  final VoidCallback? startCallback;
+
+  /// renderCallback
+  final VoidCallback? renderCallback;
+
   /// CachedNetworkImage shows a network image using a caching mechanism. It also
   /// provides support for a placeholder, showing an error and fading into the
   /// loaded image. Next to that it supports most features of a default Image
@@ -234,6 +246,10 @@ class CachedNetworkImage extends StatelessWidget {
     this.cacheKey,
     this.maxWidthDiskCache,
     this.maxHeightDiskCache,
+    this.startCallback,
+    this.loadedCallback,
+    this.failedCallback,
+    this.renderCallback,
     ImageRenderMethodForWeb imageRenderMethodForWeb =
         ImageRenderMethodForWeb.HtmlImage,
   })  : _image = CachedNetworkImageProvider(
@@ -244,6 +260,9 @@ class CachedNetworkImage extends StatelessWidget {
           imageRenderMethodForWeb: imageRenderMethodForWeb,
           maxWidth: maxWidthDiskCache,
           maxHeight: maxHeightDiskCache,
+          loadedCallback: loadedCallback,
+          failedCallback: failedCallback,
+          renderCallback: renderCallback,
         ),
         super(key: key);
 
@@ -262,6 +281,7 @@ class CachedNetworkImage extends StatelessWidget {
       octoPlaceholderBuilder = (context) => Container();
     }
 
+    startCallback?.call();
     return OctoImage(
       image: _image,
       imageBuilder: imageBuilder != null ? _octoImageBuilder : null,

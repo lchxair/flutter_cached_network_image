@@ -27,6 +27,8 @@ class ImageLoader implements platform.ImageLoader {
     Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
     Function() evictImage,
+    Function(dynamic)? loadedCallback,
+    Function()? failedCallback,
   ) async* {
     try {
       assert(
@@ -55,7 +57,13 @@ class ImageLoader implements platform.ImageLoader {
         }
         if (result is FileInfo) {
           var file = result.file;
+
           var bytes = await file.readAsBytes();
+
+          /// 下载完成，返回结果
+          if (loadedCallback != null) {
+            loadedCallback(await file.length());
+          }
           var decoded = await decode(bytes);
           yield decoded;
         }

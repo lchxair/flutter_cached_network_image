@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:ui' as ui show Codec, FrameInfo;
 
 import 'package:flutter/foundation.dart';
@@ -20,8 +21,10 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
     required double scale,
     Stream<ImageChunkEvent>? chunkEvents,
     InformationCollector? informationCollector,
+    VoidCallback? renderCallback,
   })  : _informationCollector = informationCollector,
-        _scale = scale {
+        _scale = scale,
+        _renderCallback = renderCallback {
     codec.listen((event) {
       if (_timer != null) {
         _nextImageCodec = event;
@@ -65,6 +68,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
   // How many frames have been emitted so far.
   int _framesEmitted = 0;
   Timer? _timer;
+  Function? _renderCallback;
 
   // Used to guard against registering multiple _handleAppFrame callbacks for the same frame.
   bool _frameCallbackScheduled = false;
@@ -139,6 +143,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
       // This is not an animated image, just return it and don't schedule more
       // frames.
       _emitFrame(ImageInfo(image: _nextFrame!.image, scale: _scale));
+      _renderCallback?.call();
       return;
     }
     _scheduleAppFrame();
@@ -150,6 +155,7 @@ class MultiImageStreamCompleter extends ImageStreamCompleter {
     }
     _frameCallbackScheduled = true;
     SchedulerBinding.instance.scheduleFrameCallback(_handleAppFrame);
+    _renderCallback?.call();
   }
 
   void _emitFrame(ImageInfo imageInfo) {

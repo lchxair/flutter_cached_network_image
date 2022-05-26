@@ -27,6 +27,8 @@ class ImageLoader implements platform.ImageLoader {
     Function()? errorListener,
     ImageRenderMethodForWeb imageRenderMethodForWeb,
     Function() evictImage,
+    Function(dynamic)? loadedCallback,
+    Function()? failedCallback,
   ) {
     switch (imageRenderMethodForWeb) {
       case ImageRenderMethodForWeb.HttpGet:

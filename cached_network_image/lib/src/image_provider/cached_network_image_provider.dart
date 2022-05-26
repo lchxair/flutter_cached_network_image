@@ -34,6 +34,9 @@ class CachedNetworkImageProvider
     this.cacheManager,
     this.cacheKey,
     this.imageRenderMethodForWeb = ImageRenderMethodForWeb.HtmlImage,
+    this.loadedCallback,
+    this.failedCallback,
+    this.renderCallback,
   });
 
   /// CacheManager from which the image files are loaded.
@@ -62,6 +65,15 @@ class CachedNetworkImageProvider
   /// [ImageCacheManager] the image is resized on disk to fit the width.
   final int? maxWidth;
 
+  /// loadedCallback
+  final Function(dynamic)? loadedCallback;
+
+  /// failedCallback
+  final VoidCallback? failedCallback;
+
+  /// renderCallback
+  final VoidCallback? renderCallback;
+
   /// Render option for images on the web platform.
   final ImageRenderMethodForWeb imageRenderMethodForWeb;
 
@@ -86,6 +98,7 @@ class CachedNetworkImageProvider
           style: DiagnosticsTreeStyle.errorProperty,
         );
       },
+      renderCallback: renderCallback,
     );
   }
 
@@ -107,6 +120,8 @@ class CachedNetworkImageProvider
       errorListener,
       imageRenderMethodForWeb,
       () => PaintingBinding.instance.imageCache.evict(key),
+      loadedCallback,
+      failedCallback,
     );
   }
 

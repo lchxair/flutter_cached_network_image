@@ -14,17 +14,20 @@ void main() {
   test('loadAsync returns a stream', () {
     var imageLoader = ImageLoader();
     var stream = imageLoader.loadAsync(
-        'test.com/image',
-        null,
-        StreamController<ImageChunkEvent>(),
-        decoder,
-        MockCacheManager(),
-        null,
-        null,
-        null,
-        null,
-        ImageRenderMethodForWeb.HttpGet,
-        () => {});
+      'test.com/image',
+      null,
+      StreamController<ImageChunkEvent>(),
+      decoder,
+      MockCacheManager(),
+      null,
+      null,
+      null,
+      null,
+      ImageRenderMethodForWeb.HttpGet,
+      () => {},
+      (bytes) => {},
+      () => {},
+    );
     expect(stream, isNotNull);
   });
 }
